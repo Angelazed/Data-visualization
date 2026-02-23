@@ -4,15 +4,36 @@ library(tidyverse)
 setwd("C:/Users/angel/Data-visualization")
 getwd()
 # Import the data
-wholesale <- read.csv("Wholesale_customers_data.csv")
+# By using the underscore in read_csv, I create a tibble file which is a more 
+# enhanced version of a data frame in R
+wholesale <- read_csv("Wholesale_customers_data.csv")
 wholesale
 
-# |> pipe operator. Passa il risultato di una funzione come primo argomento della funzione successiva
+# If you use dot in read.csv, you will import the dataset as an R dataframe
+wholesale_df <- read.csv("Wholesale_customers_data.csv")
+class(wholesale)
+class(wholesale_df)
+
+
 
 install.packages("dplyr")
 library(dplyr)
 
-#filter for rows, select for columns
+wholesale |>
+  glimpse(width = 70)
+
+install.packages("skimr")
+library(skimr)
+skim(wholesale) # gives an overview of the data -> quick exploratory data analysis (EDA)
+
+
+
+
+# Filter for rows, select for columns
+# |> pipe operator. Passa il risultato di una funzione come primo argomento della funzione successiva
+?select
+wholesale |>
+  filter(Channel == "Retail") # filter where Channel is equal to "Retail"
 
 wholesale |> 
   select(starts_with("De"))
@@ -27,19 +48,27 @@ wholesale |>
 wholesale |> 
   select(starts_with("De"))
 
-#,,,,,
+# Remove columns that contain "en"
 wholesale |> select(-contains("en"))
 
-install.packages("skimr")
-library(skimr)
-skim(wholesale)
 
-?select
+
+
+# , AND: both conditions must be true
+wholesale |>
+  filter(Channel == "Retail", Fresh > 10000)
+
+# | OR: at least one condition must be true
+wholesale |>
+  filter(Channel == "Retail" | Fresh > 50000)
+
 
 # Arrange dataset according to values in a column
 wholesale |>
   arrange(desc(Grocery)) |>
   select(Channel, Region, Grocery, Milk, Detergents_Paper)
+
+
 
 # Adding or transforming columns within a dataset
 # Add a new column called total_spend
