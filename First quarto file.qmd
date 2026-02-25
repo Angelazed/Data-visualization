@@ -1,0 +1,14 @@
+---
+title: "First Quarto file"
+format: html
+---
+
+
+```{r}
+
+library(tidyverse)
+
+```
+
+This is plain text. To run it use ctrl+shift+k
+In the code cell you can write echo: true (to show the code in the report) or echo: false (to hide the code in the official report)

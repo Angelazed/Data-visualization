@@ -259,3 +259,75 @@ ggplot(stock, aes(y = EU, x = time)) +
   geom_line() +
   xlab("time") +
   theme_bw()
+
+
+install.packages("ggcorrplot")
+library(ggcorrplot)
+# I created a new tibble removing the time column (temporal variable)
+stock_data <- stock[, -1] 
+class(stock_data)
+# cor() calculates pairwise correlations between all numeric columns
+# Output = a square matrix
+corr <- cor(stock_data)
+# Rounds the correlation matrix to 2 decimal places for readability
+round(corr, 2)
+
+ggcorrplot(corr)
+
+
+ggcorrplot(
+  corr,
+  hc.order = TRUE,  #This reorders the variables using hierarchical clustering.
+  outline.col = "white",  #Adds white borders around the squares in the heatmap
+  ggtheme = ggplot2::theme_bw,  #Applies the theme_bw() theme from ggplot2
+  colors = c("lightblue", "white", "pink") #Defines the color scale for negative, zero and
+                                          #positive correlations
+  )
+
+
+"""
+Visualizing maps and geospatial data using maps package
+"""
+install.packages("maps")
+library(maps)
+worldcities <- read_csv("worldcities.csv")
+
+# map_data function converts maps to data frames for ggplot2
+ita <- map_data("italy")
+head(ita, 5)
+
+
+gg_ita_map <- ggplot(data = ita) +
+  geom_polygon(  #This layer draws polygons, which are used to create maps
+    aes(x = long, y = lat, group = group),
+    col = "dodgerblue4",  #border color of the map
+    fill = "lightgray",  #inside color of the regions
+    linewidth = 0.2  #thin border lines 
+  ) +
+  coord_fixed(1) +
+  theme_bw()
+
+# coord_fixed (1) = this fixes the aspect ratio -> IMPORTANT FOR GEO DATA
+# Ensures that 1 unit on the x-axis equals 1 unit on the y-axis
+
+gg_ita_map
+
+
+# Filter for Italy
+ita_cities <- worldcities |>
+  filter(country == "Italy")
+
+# Selects the 300 cities with the highest population
+biggest_ita_cities <- ita_cities |>
+  slice_max(order_by = population, n = 300)
+
+# Take the base Italy map you created earlier (gg_ita_map) and add another layer with +
+gg_ita_map +
+  geom_point(
+    data = biggest_ita_cities,
+    aes(x = lng, y = lat, col = log(population), size = population),
+    alpha = 0.7
+  ) +
+  scale_color_viridis_c()
+# scale_color_viridis_c = applies a continuous viridis color scale ->
+# designed to be perceptually uniform, colorblind-friendly and good contrast
