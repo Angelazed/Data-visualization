@@ -1,0 +1,35 @@
+---
+title: "Weather Forecasts Accuracy Analysis"
+subtitle: "Course in Data Visualization with R <br> AY 2025/2026"
+authors: "Angela Zhang, Iva Dodikj, Jaloliddin Akhmedov "
+format: html
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+
+weather_forecasts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2022/2022-12-20/weather_forecasts.csv')
+cities <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2022/2022-12-20/cities.csv')
+outlook_meanings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2022/2022-12-20/outlook_meanings.csv')
+```
+
+""" reproducible .qmd file that includes:
+Introduction to the dataset and research questions
+Code for data import, cleaning, and analysis
+Statistical summaries and visualizations
+Clear narrative connecting insights
+Conclusions and key takeaways
+Render to HTML or PDF (≈
+ 10 pages)"""
+The dataset we are analyzing in this report is the [`Weather Forecast Accuracy`](https://github.com/rfordatascience/tidytuesday/tree/main/data/2022/2022-12-20), taken from the repository of the **TidyTuesday project**. It contains weather forecasts for 11 cities around the world, including their accuracy and the outlook meanings. The data was collected over a period of time and includes various weather conditions such as temperature, humidity, and precipitation. The dataset is structured in a way that allows us to analyze the accuracy of weather forecasts across different cities and understand the meanings behind different weather outlooks. This analysis will help us gain insights into the reliability of weather forecasts and the factors that may influence their accuracy.
+
+-	Does forecast error increase as the forecast is made more in advance?
+-	Do cities closer to the coast have higher possibility of forecast errors due to coastal climates?
+-	Are some climate zones harder to predict than others?
+-	Does higher wind speed have a relation with higher temperature forecast error?
+
