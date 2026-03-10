@@ -1,0 +1,237 @@
+---
+title: "Weather Forecasts Accuracy Analysis"
+subtitle: "Course in Data Visualization with R <br> AY 2025/2026"
+authors:
+  - name: "Angela Zhang"
+  - name: "Iva Dodikj"
+  - name: "Jaloliddin Akhmedov"
+format: html
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+
+weather_forecasts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2022/2022-12-20/weather_forecasts.csv')
+cities <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2022/2022-12-20/cities.csv')
+
+```
+
+The dataset we are analyzing in this report is the [`Weather Forecast Accuracy`](https://github.com/rfordatascience/tidytuesday/tree/main/data/2022/2022-12-20), taken from the repository of the **TidyTuesday project**. The data comes from the [USA National Weather Service](https://www.weather.gov/) and includes 16 months of forecast across 167 cities. This analysis examines the reliability of weather forecasts and the factors that may influence their accuracy through four questions:
+
+- Does forecast error increase as the forecast is made more in advance?
+- Are some climate zones harder to predict than others?
+- Do seasons influence weather forecast accuracy?
+- Does the altitude of a city have a relation with forecast error?
+
+```{r}
+#| include: false
+
+cities_cleaned <- cities |>
+  filter(!is.na(wind))
+
+weather_forecasts_cleaned <- weather_forecasts |>
+  filter(!is.na(forecast_temp), !is.na(observed_precip), !is.na(observed_temp)) |>
+  mutate(observed_temp_c = (observed_temp - 32) * 5 / 9,
+  forecast_temp_c = (forecast_temp - 32) * 5 / 9)
+
+weather_forecast_accuracy <- merge(weather_forecasts_cleaned, cities_cleaned, by = "city")
+```
+
+### Forecast Horizon vs. Error
+
+```{r}
+#| include: true
+
+weather_forecast_accuracy|>
+  group_by(forecast_hours_before) |>
+  summarise(n= n(),
+    mean_error = (mean(forecast_temp_c-observed_temp_c)),
+    median_error = median(forecast_temp_c-observed_temp_c),
+    mean_sd = sd(forecast_temp_c-observed_temp_c))
+
+```
+
+```{r}
+#| echo: false
+#| include: true
+#| message: false
+#| warning: false
+#| fig-width: 7
+#| fig-height: 5
+
+weather_forecast_accuracy |>
+  mutate(error = abs(forecast_temp_c - observed_temp_c)) |>
+  group_by(forecast_hours_before) |>
+  summarise(mean_error = mean(error)) |>
+  ggplot(aes(x = forecast_hours_before, y = mean_error)) +
+  geom_point(size = 3) +
+  geom_line() +
+  labs(
+    x = "Forecast Hours Before",
+    y = "Mean Absolute Error (°C)",
+    title = "Forecast Error by Forecast Horizon"
+  )
+```
+
+The mean error for all forecast horizons is negative. This indicates that, on average, forecasts underestimate the actual temperature. The mean error is surprisingly slightly lower for forecasts made 48 hours in advance rather than 12 hours before, while the standard deviation increases as the hours before the observation increase.
+
+### Climate zones
+
+The dataset is based on the Köppen climate classification, a system developed by German climatologist Wladimir Köppen to describe climates depending on local vegetation by using letters. These letters indicate various things in order: climate type, precipitation and temperature.
+
+Here is a map of the world showing the 5 climate types: ![](koppenmap_.png)
+
+<small> Source: [Encyclopædia Britannica](https://www.britannica.com/science/Koppen-climate-classification#/media/1/322068/206711) – M.C. Peel, B.L. Finlayson, and T.A. McMahon (2007). </small>
+
+Are some climate zones harder to predict than others? Since in the data there are 15 climates included and some present more observations than others, we decided to study only the top 7.
+
+```{r}
+#| include: true
+
+summary_koppen_error <- weather_forecast_accuracy|>
+  group_by(koppen) |>
+  summarise(n = n(),
+    mean_error = mean(forecast_temp_c-observed_temp_c),
+    median_error = median(forecast_temp_c-observed_temp_c),
+    mean_sd = sd(forecast_temp_c-observed_temp_c)) |>
+  filter(n > 10000) |>
+  arrange(mean_error) 
+
+summary_koppen_error
+```
+
+```{r}
+#| echo: false
+#| include: true
+#| message: false
+#| warning: false
+#| fig-width: 7
+#| fig-height: 5
+
+summary_koppen_error |> 
+   ggplot(aes(x = reorder(koppen, mean_error), y = mean_error)) +
+  geom_col(fill = 'skyblue') +
+   labs(
+    x = "Köppen climate",
+    y = "Mean forecast error (°C)",
+    title = "Weather forecast mean error by climate type"
+  ) +
+    theme(
+    plot.title = element_text(hjust = 0.5)  # centers the title
+  )
+```
+
+Forecast errors are highest for Dfc (Subarctic) climate, which is a type of climate with no significant difference in precipitations between seasons, followed by the BSk (Arid Steppe) Climate, characterized by low precipitation and large temperature ranges.
+
+### Seasonal Forecast Accuracy
+
+Do seasons influence weather forecast accuracy?
+
+```{r}
+#| include: false
+
+weather_forecast_accuracy <- weather_forecast_accuracy |>
+  mutate(
+    month = month(date),  # extract numeric month from date
+    season = case_when(
+      month %in% c(12,1,2) ~ "Winter",
+      month %in% c(3,4,5) ~ "Spring",
+      month %in% c(6,7,8) ~ "Summer",
+      month %in% c(9,10,11) ~ "Fall"
+    )
+  )
+
+season_summary <- weather_forecast_accuracy |>
+  group_by(season, forecast_hours_before) |>
+  summarise(
+    mean_error = mean(abs(forecast_temp_c - observed_temp_c), na.rm = TRUE),
+    .groups = "drop"
+  )
+```
+
+```{r}
+#| include: true
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 6
+
+ggplot(season_summary, aes(x = factor(season, levels = c("Fall","Winter","Spring","Summer")),
+    y = factor(forecast_hours_before),
+    fill = mean_error)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "white", high = "darkgreen") +
+  labs(
+    title = "Forecast Error by Season and Forecast Horizon",
+    x = "Season",
+    y = "Forecast Hours Before",
+    fill = "Mean Error (°C)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+The heatmap clearly shows that weather accuracy is particularly low in Winter. This can be attributed to different factors, such as pressure systems and movement of the Arctic Air. To learn more about the reasons, read this article written by David M. Ewalt for the [*Scientific American*](https://www.scientificamerican.com/article/why-are-winter-storm-forecasts-all-over-the-place/), focused on US weather forecasts, or this blog post from [*Severe Weather Europe*](https://www.severe-weather.eu/long-range-2/winter-season-forecast-accuracy-snow-temperature-pressure-united-states-europe-verification-fa/) for an in-depth worldwide perspective of the phenomenon.
+
+### Elevation Change
+
+Elevation change refers to the difference in elevation between two points on Earth's surface (typically relative to sea level). The dataset presents two columns related to elevation: `elevation_change_four` and `elevation_change_eight`. We decided to use the latter because it's considered more reliable and accurate due to the incorporation of more data points, reducing directional bias and improving representation of local topography.
+
+```{r}
+#| echo: false
+#| include: true
+#| message: false
+#| warning: false
+
+weather_forecast_accuracy|>
+  group_by(city) |>
+  summarise(
+  elevation = mean(elevation_change_eight),
+  elevation_error = abs(mean(forecast_temp_c - observed_temp_c)),
+  elevation_sd = sd(forecast_temp_c-observed_temp_c)
+  ) |>
+  arrange(elevation) |>
+  print(n = 10)
+```
+
+```{r}
+#| include: true
+#| message: false
+#| warning: false
+#| fig-width: 7
+#| fig-height: 5
+
+weather_forecast_accuracy|>
+  group_by(city) |>
+  summarise(
+  elevation_error = abs(mean(forecast_temp_c - observed_temp_c)),
+  elevation_change_eight = mean(elevation_change_eight)
+  ) |>
+  ggplot(mapping=aes(x = elevation_change_eight, y = elevation_error)) +
+  geom_point(colour = "blue", alpha = 0.5) +
+  geom_smooth(method = "loess", colour = 'pink') +
+  labs(x = "Elevation Change Eight",
+  y = "Mean error",
+  title = "Forecast Error by Elevation Change Eight") +
+   theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+The plot suggests a slight increase in forecast error with elevation.
+
+> "Differing amounts and types of air molecules present in atmosphere’s layers result in temperatures that cool with height at some altitudes and warm with height at others."[^1]
+
+### Conclusions
+
+This report shows that weather forecasts are pretty accurate with a mean error between 0.21°C and 0.26°C depending on the hours the forecast was made before the observed temperature. Variables that affect accuracy are climate zones, seasonality and elevation above sea level. Further studies could be carried out on geographic and local factors and long-term analysis across decades to see if there is an improvement in employed models.
+
+[^1]: UCAR - Center for Science Education. *Change in the Atmosphere with Altitude.* https://scied.ucar.edu/learning-zone/atmosphere/change-atmosphere-altitude (Accessed March 9, 2026)
