@@ -74,10 +74,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#forecast-horizon-vs.-error" id="toc-forecast-horizon-vs.-error" class="nav-link active" data-scroll-target="#forecast-horizon-vs.-error">Forecast Horizon vs.&nbsp;Error</a></li>
+  <li><a href="#climate-zones" id="toc-climate-zones" class="nav-link" data-scroll-target="#climate-zones">Climate zones</a></li>
+  <li><a href="#seasonal-forecast-accuracy" id="toc-seasonal-forecast-accuracy" class="nav-link" data-scroll-target="#seasonal-forecast-accuracy">Seasonal Forecast Accuracy</a></li>
+  <li><a href="#elevation-change" id="toc-elevation-change" class="nav-link" data-scroll-target="#elevation-change">Elevation Change</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -108,7 +120,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The dataset we are analyzing in this report is the <a href="https://github.com/rfordatascience/tidytuesday/tree/main/data/2022/2022-12-20"><code>Weather Forecast Accuracy</code></a>, taken from the repository of the <strong>TidyTuesday project</strong>. The data comes from the <a href="https://www.weather.gov/">USA National Weather Service</a> and includes 16 months of forecast across 167 cities. This analysis examines the reliability of weather forecasts and the factors that may influence their accuracy through four questions:</p>
+<p>The dataset we are analyzing in this report is the <a href="https://github.com/rfordatascience/tidytuesday/tree/main/data/2022/2022-12-20"><code>Weather Forecast Accuracy</code></a>, taken from the repository of the <strong>TidyTuesday project</strong>. The data comes from the <a href="https://www.weather.gov/">USA National Weather Service</a> and includes 16 months of forecasts across 167 cities. This analysis examines the reliability of weather forecasts and the factors that may influence their accuracy through four questions:</p>
 <ul>
 <li>Does forecast error increase as the forecast is made more in advance?</li>
 <li>Are some climate zones harder to predict than others?</li>
@@ -184,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Forecast errors are highest for Dfc (Subarctic) climate, which is a type of climate with no significant difference in precipitations between seasons, followed by the BSk (Arid Steppe) Climate, characterized by low precipitation and large temperature ranges.</p>
+<p>Forecast errors are highest for the Dfc (Subarctic) climate, which is a type of climate with no significant difference in precipitation between seasons, followed by the BSk (Arid Steppe) climate, characterized by low precipitation and large temperature ranges. Therefore, climates with stronger temperature variability or harsher environmental conditions may be more difficult for forecasting models to predict accurately.</p>
 </section>
 <section id="seasonal-forecast-accuracy" class="level3">
 <h3 class="anchored" data-anchor-id="seasonal-forecast-accuracy">Seasonal Forecast Accuracy</h3>
@@ -260,14 +272,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>The plot suggests a slight increase in forecast error with elevation.</p>
+<p>The plot suggests a slight increase in forecast error as elevation increases. This may occur because mountainous areas often have more complex atmospheric conditions, making weather patterns harder to model.</p>
 <blockquote class="blockquote">
 <p>“Differing amounts and types of air molecules present in atmosphere’s layers result in temperatures that cool with height at some altitudes and warm with height at others.”<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 </blockquote>
 </section>
 <section id="conclusions" class="level3">
 <h3 class="anchored" data-anchor-id="conclusions">Conclusions</h3>
-<p>This report shows that weather forecasts are pretty accurate with a mean error between 0.21°C and 0.26°C depending on the hours the forecast was made before the observed temperature. Variables that affect accuracy are climate zones, seasonality and elevation above sea level. Further studies could be carried out on geographic and local factors and long-term analysis across decades to see if there is an improvement in employed models.</p>
+<p>This report shows that weather forecasts are pretty accurate with a mean error between 0.21°C and 0.26°C depending on the hours the forecast was made before the observed temperature. Factors that appear to influence accuracy are climate zones, seasonal patterns and elevation above sea level. Further studies could be carried out on geographic and local factors and long-term analysis across decades to see if there is an improvement in forecasting models.</p>
 </section>
 
 
