@@ -1,0 +1,18 @@
+/*-- scss:defaults --*/
+
+/* Pastel green background with dark text */
+$body-bg: #A8E6CF;   /* pastel mint green */
+$body-color: #000000; /* black text */
+$heading-color: #000000; /* slightly darker headings */
+
+/*-- scss:rules --*/
+/* optional extra styling */
+.reveal a {
+  color: #006400; /* dark green links */
+}
+.reveal code {
+  background-color: #DFFFE0; /* lighter green for code blocks */
+  color: #000000;
+  padding: 2px 4px;
+  border-radius: 3px;
+}

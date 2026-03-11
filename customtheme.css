@@ -1,0 +1,10 @@
+/* custom.scss — Quarto RevealJS theme override */
+
+/* Lightened Solarized cyan background */
+$body-bg: lighten($cyan, 15%);
+
+/* Darker text for readability */
+$body-color: #000000;   /* black text */
+
+/* Optional: headings slightly darker than default */
+$heading-color: #111111;
