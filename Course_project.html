@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Weather Forecasts Accuracy Analysis</title>
+<title>Are Weather Forecasts Reliable?</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -94,8 +94,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Weather Forecasts Accuracy Analysis</h1>
-<p class="subtitle lead">Course in Data Visualization with R <br> AY 2025/2026</p>
+<h1 class="title">Are Weather Forecasts Reliable?</h1>
+<p class="subtitle lead">A Data Analysis of Weather Forecast Accuracy <br> Course in Data Visualization with R | AY 2025/2026</p>
 </div>
 
 
@@ -146,6 +146,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 4                    48 156807     -0.210        0        1.89</code></pre>
 </div>
 </div>
+<p>The mean error for all forecast horizons is negative. This indicates that, on average, forecasts underestimate the actual temperature. The mean error is slightly lower for forecasts made 48 hours in advance than for those made 12 hours before, while the standard deviation increases as the hours before the observation increase.</p>
+<p>To plot forecast accuracy based on forecast horizon, we compute the absolute error, defined as the absolute difference between forecasted and observed temperature.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -155,14 +157,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>The mean error for all forecast horizons is negative. This indicates that, on average, forecasts underestimate the actual temperature. The mean error is surprisingly slightly lower for forecasts made 48 hours in advance rather than 12 hours before, while the standard deviation increases as the hours before the observation increase.</p>
 </section>
 <section id="climate-zones" class="level3">
 <h3 class="anchored" data-anchor-id="climate-zones">Climate zones</h3>
 <p>The dataset is based on the Köppen climate classification, a system developed by German climatologist Wladimir Köppen to describe climates depending on local vegetation by using letters. These letters indicate various things in order: climate type, precipitation and temperature.</p>
 <p>Here is a map of the world showing the 5 climate types: <img src="koppenmap_.png" class="img-fluid"></p>
 <p><small> Source: <a href="https://www.britannica.com/science/Koppen-climate-classification#/media/1/322068/206711">Encyclopædia Britannica</a> – M.C. Peel, B.L. Finlayson, and T.A. McMahon (2007). </small></p>
-<p>Are some climate zones harder to predict than others? Since in the data there are 15 climates included and some present more observations than others, we decided to study only the top 7.</p>
+<p>Are some climate zones harder to predict than others? Since in the data there are 15 climates included and some contain more observations than others, we decided to study only the top 7.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>summary_koppen_error <span class="ot">&lt;-</span> weather_forecast_accuracy<span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(koppen) <span class="sc">|&gt;</span></span>
@@ -196,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Forecast errors are highest for the Dfc (Subarctic) climate, which is a type of climate with no significant difference in precipitation between seasons, followed by the BSk (Arid Steppe) climate, characterized by low precipitation and large temperature ranges. Therefore, climates with stronger temperature variability or harsher environmental conditions may be more difficult for forecasting models to predict accurately.</p>
+<p>Forecast errors are highest for the Dfc (Subarctic) climate, which is a type of climate with no significant difference in precipitation between seasons, followed by the BSk (Arid Steppe) climate, characterized by low precipitation and large temperature ranges. The results imply that climates with stronger temperature variability or harsher environmental conditions may be more difficult for forecasting models to predict accurately.</p>
 </section>
 <section id="seasonal-forecast-accuracy" class="level3">
 <h3 class="anchored" data-anchor-id="seasonal-forecast-accuracy">Seasonal Forecast Accuracy</h3>
@@ -225,7 +226,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>The heatmap clearly shows that weather accuracy is particularly low in Winter. This can be attributed to different factors, such as pressure systems and movement of the Arctic Air. To learn more about the reasons, read this article written by David M. Ewalt for the <a href="https://www.scientificamerican.com/article/why-are-winter-storm-forecasts-all-over-the-place/"><em>Scientific American</em></a>, focused on US weather forecasts, or this blog post from <a href="https://www.severe-weather.eu/long-range-2/winter-season-forecast-accuracy-snow-temperature-pressure-united-states-europe-verification-fa/"><em>Severe Weather Europe</em></a> for an in-depth worldwide perspective of the phenomenon.</p>
+<p>The heatmap shows that forecast errors increase with the forecast horizon across all seasons, but weather accuracy is particularly low in Winter. This can be attributed to different factors, such as pressure systems and movement of the Arctic Air. To learn more about the reasons, read this article written by David M. Ewalt for the <a href="https://www.scientificamerican.com/article/why-are-winter-storm-forecasts-all-over-the-place/"><em>Scientific American</em></a>, focused on US weather forecasts, or this blog post from <a href="https://www.severe-weather.eu/long-range-2/winter-season-forecast-accuracy-snow-temperature-pressure-united-states-europe-verification-fa/"><em>Severe Weather Europe</em></a> for an in-depth worldwide perspective of the phenomenon.</p>
 </section>
 <section id="elevation-change" class="level3">
 <h3 class="anchored" data-anchor-id="elevation-change">Elevation Change</h3>
@@ -279,7 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="conclusions" class="level3">
 <h3 class="anchored" data-anchor-id="conclusions">Conclusions</h3>
-<p>This report shows that weather forecasts are pretty accurate with a mean error between 0.21°C and 0.26°C depending on the hours the forecast was made before the observed temperature. Factors that appear to influence accuracy are climate zones, seasonal patterns and elevation above sea level. Further studies could be carried out on geographic and local factors and long-term analysis across decades to see if there is an improvement in forecasting models.</p>
+<p>This report shows that weather forecasts are generally accurate with a mean error between 0.21°C and 0.26°C depending on the hours the forecast was made before the observed temperature. Factors that appear to influence accuracy are climate zones, seasonal patterns and elevation above sea level. Overall, the relatively small magnitude of the errors suggests that modern weather forecasting models provide highly reliable temperature predictions. Further studies could be carried out on geographic and local factors and long-term analysis across multiple decades to assess how forecasting accuracy evolves as prediction models improve.</p>
 </section>
 
 

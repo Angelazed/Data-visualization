@@ -1,6 +1,6 @@
 ---
-title: "Weather Forecasts Accuracy Analysis"
-subtitle: "Course in Data Visualization with R <br> AY 2025/2026"
+title: "Are Weather Forecasts Reliable?"
+subtitle: "A Data Analysis of Weather Forecast Accuracy <br> Course in Data Visualization with R | AY 2025/2026"
 authors:
   - name: "Angela Zhang"
   - name: "Iva Dodikj"
@@ -15,19 +15,19 @@ format:
 #| include: false
 
 library(tidyverse)
-library(lubridate)
 
 weather_forecasts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2022/2022-12-20/weather_forecasts.csv')
 cities <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2022/2022-12-20/cities.csv')
 
 ```
 
+
 The dataset we are analyzing in this report is the [`Weather Forecast Accuracy`](https://github.com/rfordatascience/tidytuesday/tree/main/data/2022/2022-12-20), taken from the repository of the **TidyTuesday project**. The data comes from the [USA National Weather Service](https://www.weather.gov/) and includes 16 months of forecasts across 167 cities. This analysis examines the reliability of weather forecasts and the factors that may influence their accuracy through four questions:
 
-- Does forecast error increase as the forecast is made more in advance?
-- Are some climate zones harder to predict than others?
-- Do seasons influence weather forecast accuracy?
-- Does the altitude of a city have a relation with forecast error?
+-   Does forecast error increase as the forecast is made more in advance?
+-   Are some climate zones harder to predict than others?
+-   Do seasons influence weather forecast accuracy?
+-   Does the altitude of a city have a relation with forecast error?
 
 ```{r}
 #| include: false
@@ -57,6 +57,10 @@ weather_forecast_accuracy|>
 
 ```
 
+The mean error for all forecast horizons is negative. This indicates that, on average, forecasts underestimate the actual temperature. The mean error is slightly lower for forecasts made 48 hours in advance than for those made 12 hours before, while the standard deviation increases as the hours before the observation increase.
+
+To plot forecast accuracy based on forecast horizon, we compute the absolute error, defined as the absolute difference between forecasted and observed temperature.
+
 ```{r}
 #| echo: false
 #| include: true
@@ -80,8 +84,6 @@ weather_forecast_accuracy |>
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-The mean error for all forecast horizons is negative. This indicates that, on average, forecasts underestimate the actual temperature. The mean error is surprisingly slightly lower for forecasts made 48 hours in advance rather than 12 hours before, while the standard deviation increases as the hours before the observation increase.
-
 ### Climate zones
 
 The dataset is based on the Köppen climate classification, a system developed by German climatologist Wladimir Köppen to describe climates depending on local vegetation by using letters. These letters indicate various things in order: climate type, precipitation and temperature.
@@ -90,7 +92,7 @@ Here is a map of the world showing the 5 climate types: ![](koppenmap_.png)
 
 <small> Source: [Encyclopædia Britannica](https://www.britannica.com/science/Koppen-climate-classification#/media/1/322068/206711) – M.C. Peel, B.L. Finlayson, and T.A. McMahon (2007). </small>
 
-Are some climate zones harder to predict than others? Since in the data there are 15 climates included and some present more observations than others, we decided to study only the top 7.
+Are some climate zones harder to predict than others? Since in the data there are 15 climates included and some contain more observations than others, we decided to study only the top 7.
 
 ```{r}
 #| include: true
@@ -128,7 +130,7 @@ summary_koppen_error |>
   )
 ```
 
-Forecast errors are highest for the Dfc (Subarctic) climate, which is a type of climate with no significant difference in precipitation between seasons, followed by the BSk (Arid Steppe) climate, characterized by low precipitation and large temperature ranges. Therefore, climates with stronger temperature variability or harsher environmental conditions may be more difficult for forecasting models to predict accurately.
+Forecast errors are highest for the Dfc (Subarctic) climate, which is a type of climate with no significant difference in precipitation between seasons, followed by the BSk (Arid Steppe) climate, characterized by low precipitation and large temperature ranges. The results imply that climates with stronger temperature variability or harsher environmental conditions may be more difficult for forecasting models to predict accurately.
 
 ### Seasonal Forecast Accuracy
 
@@ -180,7 +182,7 @@ ggplot(season_summary, aes(x = factor(season, levels = c("Fall","Winter","Spring
   )
 ```
 
-The heatmap clearly shows that weather accuracy is particularly low in Winter. This can be attributed to different factors, such as pressure systems and movement of the Arctic Air. To learn more about the reasons, read this article written by David M. Ewalt for the [*Scientific American*](https://www.scientificamerican.com/article/why-are-winter-storm-forecasts-all-over-the-place/), focused on US weather forecasts, or this blog post from [*Severe Weather Europe*](https://www.severe-weather.eu/long-range-2/winter-season-forecast-accuracy-snow-temperature-pressure-united-states-europe-verification-fa/) for an in-depth worldwide perspective of the phenomenon.
+The heatmap shows that forecast errors increase with the forecast horizon across all seasons, but weather accuracy is particularly low in Winter. This can be attributed to different factors, such as pressure systems and movement of the Arctic Air. To learn more about the reasons, read this article written by David M. Ewalt for the [*Scientific American*](https://www.scientificamerican.com/article/why-are-winter-storm-forecasts-all-over-the-place/), focused on US weather forecasts, or this blog post from [*Severe Weather Europe*](https://www.severe-weather.eu/long-range-2/winter-season-forecast-accuracy-snow-temperature-pressure-united-states-europe-verification-fa/) for an in-depth worldwide perspective of the phenomenon.
 
 ### Elevation Change
 
@@ -231,8 +233,8 @@ The plot suggests a slight increase in forecast error as elevation increases. Th
 
 > "Differing amounts and types of air molecules present in atmosphere’s layers result in temperatures that cool with height at some altitudes and warm with height at others."[^1]
 
+[^1]: UCAR - Center for Science Education. *Change in the Atmosphere with Altitude.* https://scied.ucar.edu/learning-zone/atmosphere/change-atmosphere-altitude (Accessed March 9, 2026)
+
 ### Conclusions
 
-This report shows that weather forecasts are pretty accurate with a mean error between 0.21°C and 0.26°C depending on the hours the forecast was made before the observed temperature. Factors that appear to influence accuracy are climate zones, seasonal patterns and elevation above sea level. Further studies could be carried out on geographic and local factors and long-term analysis across decades to see if there is an improvement in forecasting models.
-
-[^1]: UCAR - Center for Science Education. *Change in the Atmosphere with Altitude.* https://scied.ucar.edu/learning-zone/atmosphere/change-atmosphere-altitude (Accessed March 9, 2026)
+This report shows that weather forecasts are generally accurate with a mean error between 0.21°C and 0.26°C depending on the hours the forecast was made before the observed temperature. Factors that appear to influence accuracy are climate zones, seasonal patterns and elevation above sea level. Overall, the relatively small magnitude of the errors suggests that modern weather forecasting models provide highly reliable temperature predictions. Further studies could be carried out on geographic and local factors and long-term analysis across multiple decades to assess how forecasting accuracy evolves as prediction models improve.
